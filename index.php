@@ -26,32 +26,51 @@ if (!$mobilList) $mobilList = [];
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AutoRent - Rental Mobil Premium</title>
+    <title>Dashboard — AutoRent</title>
+    <meta name="description" content="Dashboard manajemen armada rental mobil AutoRent. Lihat statistik dan kelola data kendaraan.">
     <link rel="stylesheet" href="style.css">
-    <!-- Menggunakan Phosphor Icons untuk icon (Opsional tapi mempercantik) -->
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
 </head>
 <body>
 
-    <!-- Navbar -->
+    <!-- ── Navbar ── -->
     <nav class="navbar">
         <a href="index.php" class="nav-brand">
-            <i class="ph ph-car-profile"></i> AutoRent
+            <div class="brand-icon">
+                <i class="ph ph-car-profile"></i>
+            </div>
+            <span class="brand-name">AutoRent</span>
         </a>
         <ul class="nav-links">
-            <li><a href="index.php" class="active">Dashboard</a></li>
-            <li><a href="tambah.php">Tambah Mobil</a></li>
-            <li><a href="logout.php" class="btn btn-outline" style="padding: 0.5rem 1rem; border-color: var(--danger-color); color: var(--danger-color);"><i class="ph ph-sign-out"></i> Logout</a></li>
+            <li>
+                <a href="index.php" class="active">
+                    <i class="ph ph-squares-four"></i> Dashboard
+                </a>
+            </li>
+            <li>
+                <a href="tambah.php">
+                    <i class="ph ph-plus-circle"></i> Tambah
+                </a>
+            </li>
+            <li>
+                <a href="logout.php" class="btn-logout">
+                    <i class="ph ph-sign-out"></i> Logout
+                </a>
+            </li>
         </ul>
     </nav>
 
-    <!-- Hero Section -->
+    <!-- ── Hero ── -->
     <div class="hero">
-        <h1>Temukan Mobil Impian Anda</h1>
-        <p>Sistem manajemen rental mobil modern dengan pelayanan premium dan pilihan armada terbaik untuk perjalanan Anda.</p>
+        <div class="hero-eyebrow">
+            <i class="ph ph-car-profile"></i>
+            Panel Admin
+        </div>
+        <h1>Kelola Armada Rental Anda</h1>
+        <p>Pantau status armada, tambah kendaraan baru, dan optimalkan operasional rental mobil Anda dari satu dashboard.</p>
     </div>
 
-    <!-- Stats -->
+    <!-- ── Stats ── -->
     <div class="stats-container">
         <div class="stat-card">
             <div class="stat-icon icon-blue">
@@ -68,7 +87,7 @@ if (!$mobilList) $mobilList = [];
             </div>
             <div class="stat-info">
                 <h3><?= $mobilTersedia ?></h3>
-                <p>Mobil Tersedia</p>
+                <p>Tersedia</p>
             </div>
         </div>
         <div class="stat-card">
@@ -82,37 +101,62 @@ if (!$mobilList) $mobilList = [];
         </div>
     </div>
 
-    <!-- Main Content -->
+    <!-- ── Main Content ── -->
     <div class="container">
         <div class="controls">
-            <div class="search-box">
-                <input type="text" id="searchInput" class="search-input" placeholder="Cari nama atau merk mobil...">
-                <select id="filterStatus" class="filter-select">
-                    <option value="">Semua Status</option>
-                    <option value="tersedia">Tersedia</option>
-                    <option value="disewa">Disewa</option>
-                </select>
+            <div class="controls-left">
+                <span class="section-title">Daftar Kendaraan</span>
+                <span class="section-count"><?= count($mobilList) ?> unit</span>
             </div>
-            <a href="tambah.php" class="btn btn-primary">
-                <i class="ph ph-plus"></i> Tambah Data Mobil
-            </a>
+            <div style="display:flex; gap: 0.75rem; align-items: center; flex-wrap: wrap;">
+                <div class="search-box">
+                    <input
+                        type="text"
+                        id="searchInput"
+                        class="search-input"
+                        placeholder="&#xe0fc; Cari nama atau merk..."
+                    >
+                    <select id="filterStatus" class="filter-select">
+                        <option value="">Semua Status</option>
+                        <option value="tersedia">Tersedia</option>
+                        <option value="disewa">Disewa</option>
+                    </select>
+                </div>
+                <a href="tambah.php" class="btn btn-primary" id="btn-tambah">
+                    <i class="ph ph-plus"></i> Tambah Mobil
+                </a>
+            </div>
         </div>
 
         <div class="cars-grid" id="carsGrid">
             <?php if (count($mobilList) > 0): ?>
-                <?php foreach ($mobilList as $mobil): ?>
-                    <div class="car-card">
-                        <?php 
-                        $gambar = !empty($mobil['gambar_mobil']) && file_exists('uploads/' . $mobil['gambar_mobil']) 
-                            ? 'uploads/' . $mobil['gambar_mobil'] 
-                            : 'https://images.unsplash.com/photo-1550355291-bbee04a92027?auto=format&fit=crop&q=80&w=400'; 
-                        ?>
-                        <img src="<?= $gambar ?>" alt="<?= htmlspecialchars($mobil['nama_mobil']) ?>" class="car-img">
+                <?php foreach ($mobilList as $i => $mobil): ?>
+                    <?php
+                    $gambar = !empty($mobil['gambar_mobil']) && file_exists('uploads/' . $mobil['gambar_mobil'])
+                        ? 'uploads/' . $mobil['gambar_mobil']
+                        : 'https://images.unsplash.com/photo-1550355291-bbee04a92027?auto=format&fit=crop&q=80&w=600';
+                    $delay = ($i % 6) * 0.05;
+                    ?>
+                    <div class="car-card" style="animation-delay: <?= $delay ?>s"
+                         data-name="<?= strtolower(htmlspecialchars($mobil['nama_mobil'])) ?>"
+                         data-merk="<?= strtolower(htmlspecialchars($mobil['merk'])) ?>"
+                         data-status="<?= strtolower($mobil['status_mobil']) ?>">
+
+                        <div class="car-img-wrap">
+                            <img
+                                src="<?= $gambar ?>"
+                                alt="<?= htmlspecialchars($mobil['nama_mobil']) ?>"
+                                class="car-img"
+                                loading="lazy"
+                            >
+                            <div class="car-img-overlay"></div>
+                        </div>
+
                         <div class="car-content">
                             <div class="car-header">
                                 <div>
                                     <h3 class="car-title"><?= htmlspecialchars($mobil['nama_mobil']) ?></h3>
-                                    <span class="car-brand"><?= htmlspecialchars($mobil['merk']) ?></span>
+                                    <p class="car-brand"><?= htmlspecialchars($mobil['merk']) ?></p>
                                 </div>
                                 <?php if ($mobil['status_mobil'] == 'Tersedia'): ?>
                                     <span class="badge badge-tersedia">Tersedia</span>
@@ -120,25 +164,26 @@ if (!$mobilList) $mobilList = [];
                                     <span class="badge badge-disewa">Disewa</span>
                                 <?php endif; ?>
                             </div>
-                            
+
                             <div class="car-details">
                                 <span><i class="ph ph-calendar-blank"></i> <?= $mobil['tahun'] ?></span>
                                 <span><i class="ph ph-gas-pump"></i> Bensin</span>
-                                <span><i class="ph ph-users"></i> 4/5 Kursi</span>
+                                <span><i class="ph ph-users"></i> 4–5 kursi</span>
                             </div>
 
                             <div class="car-price">
-                                Rp <?= number_format($mobil['harga_sewa'], 0, ',', '.') ?> <span style="font-size: 0.9rem; font-weight: normal; color: var(--text-muted)">/ hari</span>
+                                Rp <?= number_format($mobil['harga_sewa'], 0, ',', '.') ?>
+                                <small>/ hari</small>
                             </div>
 
                             <div class="car-actions">
-                                <a href="detail.php?id=<?= $mobil['id_mobil'] ?>" class="btn btn-outline" title="Detail">
+                                <a href="detail.php?id=<?= $mobil['id_mobil'] ?>" class="btn btn-outline">
                                     <i class="ph ph-eye"></i> Detail
                                 </a>
-                                <a href="edit.php?id=<?= $mobil['id_mobil'] ?>" class="btn btn-warning" title="Edit">
+                                <a href="edit.php?id=<?= $mobil['id_mobil'] ?>" class="btn btn-warning">
                                     <i class="ph ph-pencil-simple"></i>
                                 </a>
-                                <a href="hapus.php?id=<?= $mobil['id_mobil'] ?>" class="btn btn-danger btn-delete" title="Hapus">
+                                <a href="hapus.php?id=<?= $mobil['id_mobil'] ?>" class="btn btn-danger btn-delete">
                                     <i class="ph ph-trash"></i>
                                 </a>
                             </div>
@@ -146,9 +191,9 @@ if (!$mobilList) $mobilList = [];
                     </div>
                 <?php endforeach; ?>
             <?php else: ?>
-                <div style="grid-column: 1 / -1; text-align: center; padding: 3rem; color: var(--text-muted);">
-                    <i class="ph ph-car" style="font-size: 4rem; margin-bottom: 1rem; opacity: 0.5;"></i>
-                    <h2>Belum ada data mobil</h2>
+                <div class="empty-state">
+                    <i class="ph ph-car"></i>
+                    <h2>Belum ada data kendaraan</h2>
                     <p>Silakan tambahkan data mobil pertama Anda.</p>
                 </div>
             <?php endif; ?>

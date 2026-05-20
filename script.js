@@ -1,50 +1,65 @@
 // script.js
 
 document.addEventListener('DOMContentLoaded', function() {
-    
+
     // 1. Konfirmasi Hapus
     const deleteButtons = document.querySelectorAll('.btn-delete');
     deleteButtons.forEach(button => {
         button.addEventListener('click', function(e) {
-            if(!confirm('Apakah Anda yakin ingin menghapus data mobil ini? Tindakan ini tidak dapat dibatalkan.')) {
+            if (!confirm('Apakah Anda yakin ingin menghapus data mobil ini?\nTindakan ini tidak dapat dibatalkan.')) {
                 e.preventDefault();
             }
         });
     });
 
-    // 2. Real-time Search dan Filter pada Halaman Index
-    const searchInput = document.getElementById('searchInput');
+    // 2. Real-time Search & Filter (gunakan data attributes)
+    const searchInput  = document.getElementById('searchInput');
     const filterStatus = document.getElementById('filterStatus');
-    const carCards = document.querySelectorAll('.car-card');
+    const carCards     = document.querySelectorAll('.car-card');
 
     function filterCars() {
         if (!searchInput || !filterStatus) return;
 
-        const searchTerm = searchInput.value.toLowerCase();
+        const searchTerm = searchInput.value.toLowerCase().trim();
         const statusTerm = filterStatus.value.toLowerCase();
+        let visible = 0;
 
         carCards.forEach(card => {
-            const title = card.querySelector('.car-title').textContent.toLowerCase();
-            const brand = card.querySelector('.car-brand').textContent.toLowerCase();
-            const status = card.querySelector('.badge').textContent.toLowerCase();
+            const name   = (card.dataset.name  || '').toLowerCase();
+            const merk   = (card.dataset.merk  || '').toLowerCase();
+            const status = (card.dataset.status|| '').toLowerCase();
 
-            const matchSearch = title.includes(searchTerm) || brand.includes(searchTerm);
+            const matchSearch = name.includes(searchTerm) || merk.includes(searchTerm);
             const matchStatus = statusTerm === '' || status.includes(statusTerm);
 
             if (matchSearch && matchStatus) {
                 card.style.display = 'flex';
+                card.style.opacity = '1';
+                visible++;
             } else {
                 card.style.display = 'none';
+                card.style.opacity = '0';
             }
         });
+
+        // Tampilkan pesan kosong jika tidak ada hasil
+        let noResult = document.getElementById('no-result-msg');
+        if (visible === 0 && carCards.length > 0) {
+            if (!noResult) {
+                noResult = document.createElement('div');
+                noResult.id = 'no-result-msg';
+                noResult.className = 'empty-state';
+                noResult.style.gridColumn = '1 / -1';
+                noResult.innerHTML = '<i class="ph ph-magnifying-glass"></i><h2>Tidak ada hasil</h2><p>Coba ubah kata kunci atau filter status.</p>';
+                document.getElementById('carsGrid').appendChild(noResult);
+            }
+        } else if (noResult) {
+            noResult.remove();
+        }
     }
 
-    if (searchInput) {
-        searchInput.addEventListener('keyup', filterCars);
-    }
-    if (filterStatus) {
-        filterStatus.addEventListener('change', filterCars);
-    }
+    if (searchInput)  searchInput.addEventListener('input', filterCars);
+    if (filterStatus) filterStatus.addEventListener('change', filterCars);
 
     // 3. Image Preview pada Form Tambah/Edit
     const imageInput = document.getElementById('gambar_mobil');
