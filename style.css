@@ -1182,3 +1182,48 @@ body::before {
     .stats-container { grid-template-columns: 1fr; }
     .nav-links { gap: 0.25rem; }
 }
+
+/* ============================================================
+   TRANSAKSI TABLE & PRINT RECEIPT STYLES
+   ============================================================ */
+.table-transaksi tbody tr:hover {
+    background: rgba(255, 255, 255, 0.02);
+}
+
+.table-transaksi th, .table-transaksi td {
+    border-bottom: 1px solid var(--border);
+}
+
+/* Print Invoice Styles */
+@media print {
+    body {
+        background: #white !important;
+        color: #000000 !important;
+        font-family: sans-serif;
+    }
+    body::before {
+        display: none !important;
+    }
+    .navbar, .btn, .hero, .controls, .nav-links {
+        display: none !important;
+    }
+    .container {
+        margin: 0 !important;
+        padding: 0 !important;
+        max-width: 100% !important;
+    }
+    .form-container {
+        border: none !important;
+        box-shadow: none !important;
+        background: transparent !important;
+        color: #000000 !important;
+        padding: 0 !important;
+    }
+    .form-container h1, .form-container p, .form-container strong, .form-container span, .form-container td, .form-container th {
+        color: #000000 !important;
+    }
+    .form-container div {
+        border-color: #cccccc !important;
+    }
+}
+

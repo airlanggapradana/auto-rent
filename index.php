@@ -53,6 +53,11 @@ if (!$mobilList) $mobilList = [];
                 </a>
             </li>
             <li>
+                <a href="transaksi.php">
+                    <i class="ph ph-receipt"></i> Transaksi
+                </a>
+            </li>
+            <li>
                 <a href="logout.php" class="btn-logout">
                     <i class="ph ph-sign-out"></i> Logout
                 </a>
@@ -177,13 +182,22 @@ if (!$mobilList) $mobilList = [];
                             </div>
 
                             <div class="car-actions">
-                                <a href="detail.php?id=<?= $mobil['id_mobil'] ?>" class="btn btn-outline">
-                                    <i class="ph ph-eye"></i> Detail
-                                </a>
-                                <a href="edit.php?id=<?= $mobil['id_mobil'] ?>" class="btn btn-warning">
+                                <?php if ($mobil['status_mobil'] == 'Tersedia'): ?>
+                                    <a href="sewa.php?id=<?= $mobil['id_mobil'] ?>" class="btn btn-primary" style="flex: 2;">
+                                        <i class="ph ph-key"></i> Sewa
+                                    </a>
+                                    <a href="detail.php?id=<?= $mobil['id_mobil'] ?>" class="btn btn-outline" style="flex: 1;" title="Detail">
+                                        <i class="ph ph-eye"></i>
+                                    </a>
+                                <?php else: ?>
+                                    <a href="detail.php?id=<?= $mobil['id_mobil'] ?>" class="btn btn-outline" style="flex: 3;">
+                                        <i class="ph ph-eye"></i> Detail
+                                    </a>
+                                <?php endif; ?>
+                                <a href="edit.php?id=<?= $mobil['id_mobil'] ?>" class="btn btn-warning" title="Edit">
                                     <i class="ph ph-pencil-simple"></i>
                                 </a>
-                                <a href="hapus.php?id=<?= $mobil['id_mobil'] ?>" class="btn btn-danger btn-delete">
+                                <a href="hapus.php?id=<?= $mobil['id_mobil'] ?>" class="btn btn-danger btn-delete" title="Hapus">
                                     <i class="ph ph-trash"></i>
                                 </a>
                             </div>

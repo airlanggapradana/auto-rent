@@ -20,3 +20,18 @@ INSERT INTO mobil (nama_mobil, merk, tahun, harga_sewa, status_mobil, gambar_mob
 ('Innova Reborn', 'Toyota', 2022, 500000, 'Tersedia', 'default.jpg'),
 ('Suzuki Ertiga', 'Suzuki', 2020, 300000, 'Tersedia', 'default.jpg'),
 ('Hyundai Creta', 'Hyundai', 2023, 450000, 'Disewa', 'default.jpg');
+
+CREATE TABLE sewa (
+    id_sewa SERIAL PRIMARY KEY,
+    id_mobil INT REFERENCES mobil(id_mobil) ON DELETE SET NULL,
+    nama_peminjam VARCHAR(100) NOT NULL,
+    nik_peminjam VARCHAR(50) NOT NULL,
+    no_hp VARCHAR(20) NOT NULL,
+    tgl_sewa DATE NOT NULL,
+    tgl_kembali DATE NOT NULL,
+    total_harga INT NOT NULL,
+    status_pembayaran VARCHAR(20) NOT NULL DEFAULT 'Pending',
+    snap_token VARCHAR(255) NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
