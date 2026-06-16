@@ -59,11 +59,31 @@ Relasi antar tabel dalam database AutoRent adalah **One-to-Many** dari tabel `mo
   2. Kunci tamu (`Foreign Key`) didefinisikan pada kolom `id_mobil` di tabel `sewa` yang merujuk pada `id_mobil` di tabel `mobil`.
   3. Menggunakan klausa `ON DELETE SET NULL`. Jika sebuah armada mobil dihapus dari sistem, catatan riwayat transaksi sewa masa lalu tidak akan ikut terhapus, melainkan nilai `id_mobil` pada transaksi tersebut diubah menjadi `NULL`. Di antarmuka admin, hal ini akan ditampilkan secara aman sebagai *"Mobil Dihapus"*.
 
+```text
+ +-----------------------+                  +-----------------------+
+ |         mobil         |                  |         sewa          |
+ +-----------------------+                  +-----------------------+
+ | [PK] id_mobil         | 1              * | [PK] id_sewa          |
+ |      nama_mobil       |------------------| [FK] id_mobil         |
+ |      merk             |                  |      nama_peminjam    |
+ |      tahun            |                  |      nik_peminjam     |
+ |      harga_sewa       |                  |      no_hp            |
+ |      status_mobil     |                  |      tgl_sewa         |
+ |      gambar_mobil     |                  |      tgl_kembali      |
+ +-----------------------+                  |      total_harga      |
+                                            |      status_pembayaran|
+                                            |      snap_token       |
+                                            |      created_at       |
+                                            +-----------------------+
+```
+
+### Kode Diagram Mermaid (Gunakan viewer yang mendukung Mermaid untuk merendernya):
+
 ```mermaid
 erDiagram
     mobil ||--o{ sewa : "disewa dalam"
     mobil {
-        int id_mobil PK
+        int id_mobil
         string nama_mobil
         string merk
         int tahun
@@ -72,8 +92,8 @@ erDiagram
         string gambar_mobil
     }
     sewa {
-        int id_sewa PK
-        int id_mobil FK
+        int id_sewa
+        int id_mobil
         string nama_peminjam
         string nik_peminjam
         string no_hp
@@ -85,6 +105,7 @@ erDiagram
         timestamp created_at
     }
 ```
+
 
 ---
 
